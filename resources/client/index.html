@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title><script>
+    "use strict";
+
+    function doStuff() {
+        console.log("Invoked getWeightList()");		//console.log your BFF for debugging client side
+
+        const url = "/countryStats/getStats/";	// API method on webserver will be in Weight class with @Path of list
+
+        fetch(url, {
+            method: "GET",
+        }).then(response => {
+            return response.json();                 //return response to JSON
+        }).then(response => {
+            if (response.hasOwnProperty("Error")) { //checks if response from server has a key "Error"
+                alert(JSON.stringify(response));    // if it does, convert JSON object to string and alert
+            } else {
+                formatTheNewJson(response);          //this function will create an HTML table of the data (as we
+                // did in lesson 2
+            }
+        });
+    }
+
+    function formatTheNewJson(data) {
+        console.log("Invoked formatFoodList() ");
+        console.log(data);
+
+        let dataHTML = "<tr><td>CountryID</td><td>NameEnglish</td><td>NameNative</td>" +
+            "<td>Population</td></tr>";
+
+        for (let item of data) {
+            dataHTML += "<tr><td>" + item.CountryID + "</td><td>" + item.NameEnglish + "</td><td>"
+                + item.NameNative + "</td><td>"  + item.Population + "</td><td>"
+                + item.GrossDomProd + "</td><td><button class='trackFood btn btn-primary'  data-FoodID='" + item.FoodID + "'>Track</button> </td></tr>";               }
+        document.getElementById("foodTable").innerHTML = dataHTML;
+
+    }
+
+</script>
+</head>
+<body>
+    Hello World!
+    <button onclick="doStuff()">Click me</button>
+</body>
+<table id="foodTable"></table>
+</html>
