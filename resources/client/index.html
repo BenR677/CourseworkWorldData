@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title><script>
+    <title>Title</title>
+
+    <script>
     "use strict";
 
-    function doStuff() {
-        console.log("Invoked getWeightList()");		//console.log your BFF for debugging client side
+    function getInfoCardData() {
+        console.log("Invoked getInfoCardData()");		//console.log your BFF for debugging client side
 
         const url = "/countryStats/getStats/";	// API method on webserver will be in Weight class with @Path of list
 
-        fetch(url, {
+        fetch(url + 2, {
             method: "GET",
         }).then(response => {
             return response.json();                 //return response to JSON
@@ -18,32 +20,100 @@
             if (response.hasOwnProperty("Error")) { //checks if response from server has a key "Error"
                 alert(JSON.stringify(response));    // if it does, convert JSON object to string and alert
             } else {
-                formatTheNewJson(response);          //this function will create an HTML table of the data (as we
+                console.log(response);
+                formatInfoCardStats(response);          //this function will create an HTML table of the data (as we
                 // did in lesson 2
             }
         });
     }
 
-    function formatTheNewJson(data) {
-        console.log("Invoked formatFoodList() ");
+    function formatInfoCardStats(data) {
+        console.log("Invoked formatInfoCardStats() ");
         console.log(data);
 
-        let dataHTML = "<tr><td>CountryID</td><td>NameEnglish</td><td>NameNative</td>" +
-            "<td>Population</td></tr>";
+        let dataHTML = "<tr><td>CountryID</td></tr>" +
+                       "<tr><td>NameEnglish<td></tr>" +
+            "<tr><td>NameNative</td></tr>" +
+            "<tr><td>Population</td><tr>"+
+            "<tr><td>LandArea</td></tr> +" +
+            "<tr><td>GrossDomProd</td></tr>";
 
         for (let item of data) {
             dataHTML += "<tr><td>" + item.CountryID + "</td><td>" + item.NameEnglish + "</td><td>"
                 + item.NameNative + "</td><td>"  + item.Population + "</td><td>"
-                + item.GrossDomProd + "</td><td><button class='trackFood btn btn-primary'  data-FoodID='" + item.FoodID + "'>Track</button> </td></tr>";               }
-        document.getElementById("foodTable").innerHTML = dataHTML;
+                + item.GrossDomProd + "</td><td></td></tr>";}
+        document.getElementById("InfoCardTable").innerHTML = dataHTML;
 
     }
+
+
 
 </script>
 </head>
 <body>
     Hello World!
-    <button onclick="doStuff()">Click me</button>
+    <button onclick="getInfoCardData()">Click me</button>
+    <div id="InfoCardBox" class="ANIInfoCard" ><table id="InfoCardTable"></table></div>
+    <button id="LeftButton" class="operateButton" onclick="ANIInfoCardLeft()" />Start</button>
+    <button id="RightButton" class="operateButton" onclick="ANIInfoCardRight()">End</button>
+
+
+    <table id="foodTable"></table>
+<style>
+    .operateButton{
+        height: 50px;
+        width: 50px;
+    }
+    #RightButton{
+        position: fixed;
+        bottom: 100px;
+        right: 10px;
+        background-color: blue;
+    }
+    #LeftButton{
+        position: fixed;
+        bottom: 50px;
+        right: 10px;
+        background-color: red;}
+
+    #InfoCardBox {
+        position: fixed;
+        bottom: 200px;
+        right: -200px;
+        width: 200px;
+        height: 500px;
+        border: 5px solid;
+        border-color: #ff8042;
+        background-color: white;
+        border-radius: 34px;
+        opacity: 0.1;
+    }
+
+    .ANIInfoCard{
+        animation-name: none;
+        animation-duration: 1s;
+        animation-timing-function: ease-out;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
+    }
+    @keyframes InfoCardLeft {
+        from{transform: translateX(0px);opacity: 0.2}
+        to{transform:translateX(-250px); opacity: 1.0}
+    }
+    @keyframes InfoCardRight {
+        from{transform: translateX(-250px); opacity: 1.0}
+        to{transform:translateX(0px);opacity: 0.2}
+
+</style>
+    <script>
+        function ANIInfoCardLeft(){
+            document.getElementById('InfoCardBox').style.animationName ='InfoCardLeft';
+        }
+        function ANIInfoCardRight(){
+            document.getElementById('InfoCardBox').style.animationName ='InfoCardRight';
+        }
+
+    </script>
 </body>
-<table id="foodTable"></table>
+
 </html>
