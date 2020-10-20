@@ -2,60 +2,172 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
+
+
+
+
+
+
+
+
 
     <script>
     "use strict";
 
-    function getInfoCardData() {
-        console.log("Invoked getInfoCardData()");		//console.log your BFF for debugging client side
+    function getInfoCardData(CountryName) {
+        console.log("Invoked getInfoCardData()");
 
-        const url = "/countryStats/getStats/";	// API method on webserver will be in Weight class with @Path of list
+        const NameEnglish = CountryName; //Sends data from drop down box, to be put into SQL WHERE field
+        const url = "/countryStats/getStats/";	// Retrieve JSON from server with URL
 
-        fetch(url + 2, {
+        fetch(url + NameEnglish, {
             method: "GET",
         }).then(response => {
-            return response.json();                 //return response to JSON
+            return response.json();                 //Return response to JSON
         }).then(response => {
-            if (response.hasOwnProperty("Error")) { //checks if response from server has a key "Error"
-                alert(JSON.stringify(response));    // if it does, convert JSON object to string and alert
+            if (response.hasOwnProperty("Error")) { //Checks if response from server has a key "Error"
+                alert(JSON.stringify(response));    // If it does, convert JSON object to string and alert
             } else {
                 console.log(response);
-                formatInfoCardStats(response);          //this function will create an HTML table of the data (as we
-                // did in lesson 2
+                formatInfoCardStats(response);          //This function will create an HTML table of the data
             }
         });
     }
 
-    function formatInfoCardStats(data) {
+    function formatInfoCardStats(StatsData) {
         console.log("Invoked formatInfoCardStats() ");
-        console.log(data);
+        console.log(StatsData);
+        console.log(JSON.stringify(StatsData));
+        console.log(StatsData[0].CountryID);
 
-        let dataHTML = "<tr><td>CountryID</td></tr>" +
+        let TableStatsData = "<tr><td>CountryID</td>" +
                        "<tr><td>NameEnglish<td></tr>" +
             "<tr><td>NameNative</td></tr>" +
             "<tr><td>Population</td><tr>"+
-            "<tr><td>LandArea</td></tr> +" +
+            "<tr><td>LandArea</td></tr> " +
             "<tr><td>GrossDomProd</td></tr>";
 
-        for (let item of data) {
-            dataHTML += "<tr><td>" + item.CountryID + "</td><td>" + item.NameEnglish + "</td><td>"
-                + item.NameNative + "</td><td>"  + item.Population + "</td><td>"
-                + item.GrossDomProd + "</td><td></td></tr>";}
-        document.getElementById("InfoCardTable").innerHTML = dataHTML;
+        for (let item of StatsData) {
+            TableStatsData += "<tr>" + item.CountryID + "</tr" +
+                "><tr>" + item.NameEnglish + "</tr>" +
+                "<tr>" + item.NameNative + "</tr>";}
+        document.getElementById("InfoCardTable").innerHTML = TableStatsData;
 
     }
 
-
+    /*
+           var keys = Object.keys(data[0]);
+           console.log(data[0][keys[2]]);
+           document.getElementById("soup").innerHTML = 2
+           let result2 = "";
+           for (let i in keys) {
+               result2 += [data[0][keys[i]]].toString();
+               console.log(data[0][keys[i]]);
+               console.log(result2)
+           }
+           document.getElementById("NormalText").innerHTMl = result2.toString(); */
 
 </script>
 </head>
-<body>
-    Hello World!
+<body onload="prepareMap()">
+    <select name = "Countries" id="CountryDropBox">
+        <option value="1">UK</option>
+        <option value="2">France</option>
+    </select>
     <button onclick="getInfoCardData()">Click me</button>
-    <div id="InfoCardBox" class="ANIInfoCard" ><table id="InfoCardTable"></table></div>
-    <button id="LeftButton" class="operateButton" onclick="ANIInfoCardLeft()" />Start</button>
-    <button id="RightButton" class="operateButton" onclick="ANIInfoCardRight()">End</button>
+
+
+<!--
+
+    88b           d88
+    888b         d888
+    88`8b       d8'88
+    88 `8b     d8' 88 ,adPPYYba, 8b,dPPYba,
+    88  `8b   d8'  88 ""     `Y8 88P'    "8a
+    88   `8b d8'   88 ,adPPPPP88 88       d8
+    88    `888'    88 88,    ,88 88b,   ,a8"
+    88     `8'     88 `"8bbdP"Y8 88`YbbdP"'
+                                 88
+                                 88
+
+
+-->
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+
+
+    <script type="text/javascript" src="/client/js/countries.js"></script>
+    <script type="text/javascript" src="/client/js/maps.js"></script>
+    <script>
+        function runInfoCard(country){
+        console.log(country);
+        let CountryName = country;
+        ANIInfoCardOpen();
+        getInfoCardData(CountryName);
+    }
+
+    function yell() {
+            console.log("Yell")
+            ANIInfoCardClose();
+    }
+    </script>
+
+
+
+
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        #map {
+            position: relative;
+            z-index: 0;
+            width: 100%;
+            height: 60%;
+        }
+    </style>
+    <div id='map' onclick="yell()"></div>
+
+
+
+
+
+
+
+
+
+    <!--
+
+                  ___           ___           ___           ___           ___           ___
+                 /\  \         /\__\         /\  \         /\__\         /\  \         /\  \         _____
+    ___          \:\  \       /:/ _/_       /::\  \       /:/  /        /::\  \       /::\  \       /::\  \
+   /\__\          \:\  \     /:/ /\__\     /:/\:\  \     /:/  /        /:/\:\  \     /:/\:\__\     /:/\:\  \
+  /:/__/      _____\:\  \   /:/ /:/  /    /:/  \:\  \   /:/  /  ___   /:/ /::\  \   /:/ /:/  /    /:/  \:\__\
+ /::\  \     /::::::::\__\ /:/_/:/  /    /:/__/ \:\__\ /:/__/  /\__\ /:/_/:/\:\__\ /:/_/:/__/___ /:/__/ \:|__|
+ \/\:\  \__  \:\~~\~~\/__/ \:\/:/  /     \:\  \ /:/  / \:\  \ /:/  / \:\/:/  \/__/ \:\/:::::/  / \:\  \ /:/  /
+  ~~\:\/\__\  \:\  \        \::/__/       \:\  /:/  /   \:\  /:/  /   \::/__/       \::/~~/~~~~   \:\  /:/  /
+     \::/  /   \:\  \        \:\  \        \:\/:/  /     \:\/:/  /     \:\  \        \:\~~\        \:\/:/  /
+     /:/  /     \:\__\        \:\__\        \::/  /       \::/  /       \:\__\        \:\__\        \::/  /
+     \/__/       \/__/         \/__/         \/__/         \/__/         \/__/         \/__/         \/__/
+
+
+ -->
+    <div id="InfoCardBox" class="ANIInfoCard" >
+
+        <table id="InfoCardTable"></table></div>
+
+    <!-- Buttons to operate the animations while the client map is still being developed -->
+    <!-- Move InfoCard Left, beginning the animation -->
+    <button id="LeftButton" class="operateButton" onclick="ANIInfoCardOpen()" />Start</button>
+    <!-- Move InfoCard Right, ending the animation -->
+    <button id="RightButton" class="operateButton" onclick="ANIInfoCardClose()">End</button>
+
 
 
     <table id="foodTable"></table>
@@ -78,6 +190,7 @@
 
     #InfoCardBox {
         position: fixed;
+        z-index: 2;
         bottom: 200px;
         right: -200px;
         width: 200px;
@@ -96,21 +209,31 @@
         animation-iteration-count: 1;
         animation-fill-mode: forwards;
     }
-    @keyframes InfoCardLeft {
+    /* */
+    @keyframes InfoCardOpen {
         from{transform: translateX(0px);opacity: 0.2}
         to{transform:translateX(-250px); opacity: 1.0}
     }
-    @keyframes InfoCardRight {
-        from{transform: translateX(-250px); opacity: 1.0}
-        to{transform:translateX(0px);opacity: 0.2}
+    /* Moves the InfoCard back to initial position while reducing opacity, fades off to one side of the screen */
+    @keyframes InfoCardClose {
+
+        from {
+            transform: translateX(-250px);
+            opacity: 1.0
+        }
+        to {
+            transform: translateX(0px);
+            opacity: 0.2
+        }
+    }
 
 </style>
     <script>
-        function ANIInfoCardLeft(){
-            document.getElementById('InfoCardBox').style.animationName ='InfoCardLeft';
+        function ANIInfoCardOpen(){
+            document.getElementById('InfoCardBox').style.animationName ='InfoCardOpen';
         }
-        function ANIInfoCardRight(){
-            document.getElementById('InfoCardBox').style.animationName ='InfoCardRight';
+        function ANIInfoCardClose(){
+            document.getElementById('InfoCardBox').style.animationName ='InfoCardClose';
         }
 
     </script>
