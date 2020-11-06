@@ -14,8 +14,15 @@
 
 
     <script>
-    "use strict";
 
+    //Animation Scripts
+    function ANIInfoCardOpen(){
+        document.getElementById('InfoCardBox').style.animationName ='InfoCardOpen';
+    }
+    function ANIInfoCardClose(){
+        document.getElementById('InfoCardBox').style.animationName ='InfoCardClose';
+    }
+    //API Scripts
     function getInfoCardData(CountryName) {
         console.log("Invoked getInfoCardData()");
 
@@ -32,42 +39,36 @@
             } else {
                 console.log(response);
                 formatInfoCardStats(response);          //This function will create an HTML table of the data
+                formatSuperData(response);
             }
         });
     }
 
     function formatInfoCardStats(StatsData) {
+        formatSuperData(StatsData);
         console.log("Invoked formatInfoCardStats() ");
         console.log(StatsData);
         console.log(JSON.stringify(StatsData));
         console.log(StatsData[0].CountryID);
 
-        let TableStatsData = "<tr><td>CountryID</td>" +
-                       "<tr><td>NameEnglish<td></tr>" +
-            "<tr><td>NameNative</td></tr>" +
-            "<tr><td>Population</td><tr>"+
-            "<tr><td>LandArea</td></tr> " +
-            "<tr><td>GrossDomProd</td></tr>";
+        let keys = Object.keys(StatsData[0]);
+        let values = Object.values(StatsData[0])
+        console.log(values[0])
+        console.log(keys[0]);
 
-        for (let item of StatsData) {
-            TableStatsData += "<tr>" + item.CountryID + "</tr" +
-                "><tr>" + item.NameEnglish + "</tr>" +
-                "<tr>" + item.NameNative + "</tr>";}
-        document.getElementById("InfoCardTable").innerHTML = TableStatsData;
+        //StatIndex is the index of row in the table the Statistic is added too
+        for (let StatIndex = 1; StatIndex<4; StatIndex++){
+            document.getElementById("StatTable"+[StatIndex]).innerHTML =keys[StatIndex];
+            document.getElementById("Value"+[StatIndex]).innerHTML = values[StatIndex];
+        }
 
     }
+    function formatSuperData(StatsData) {
+        console.log(StatsData[0].NameEnglish);
+        document.getElementById("CountryName").innerHTML = StatsData[0].NameEnglish;
+        document.getElementById("CountryDescription").innerHTML = StatsData[0].Description;
+    }
 
-    /*
-           var keys = Object.keys(data[0]);
-           console.log(data[0][keys[2]]);
-           document.getElementById("soup").innerHTML = 2
-           let result2 = "";
-           for (let i in keys) {
-               result2 += [data[0][keys[i]]].toString();
-               console.log(data[0][keys[i]]);
-               console.log(result2)
-           }
-           document.getElementById("NormalText").innerHTMl = result2.toString(); */
 
 </script>
 </head>
@@ -103,6 +104,8 @@
     <script type="text/javascript" src="/client/js/countries.js"></script>
     <script type="text/javascript" src="/client/js/maps.js"></script>
     <script>
+
+
         function runInfoCard(country){
         console.log(country);
         let CountryName = country;
@@ -110,16 +113,11 @@
         getInfoCardData(CountryName);
     }
 
-    function yell() {
-            console.log("Yell")
+    function mapclick() {
+            console.log("mapclicked")
             ANIInfoCardClose();
     }
     </script>
-
-
-
-
-
     <style>
         html, body {
             height: 100%;
@@ -132,7 +130,7 @@
             height: 60%;
         }
     </style>
-    <div id='map' onclick="yell()"></div>
+    <div id='map' onclick="mapclick()"></div>
 
 
 
@@ -172,15 +170,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
     <!--
 
                   ___           ___           ___           ___           ___           ___
@@ -198,8 +187,54 @@
 
  -->
     <div id="InfoCardBox" class="ANIInfoCard" >
+        <div id="CountryName"></div>
+        <div id="CountryDescription"></div>
+        <table class="InfoCardTable">
+            <thead>
+            <tr>
+                <th class="tg-0pky">Statistic</th>
+                <th class="tg-0lax">Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td id="StatTable1"></td>
+                <td id="Value1"></td>
+            </tr>
+            <tr>
+                <td id= "StatTable2"></td>
+                <td id="Value2"></td>
+            </tr>
+            <tr>
+                <td id="StatTable3"></td>
+                <td id= "Value3"></td>
+            </tr>
+            <tr>
+                <td class="tg-0lax"></td>
+                <td class="tg-0lax"></td>
+            </tr>
+            <tr>
+                <td class="tg-0lax"></td>
+                <td class="tg-0lax"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
-        <table id="InfoCardTable"></table></div>
+    <style type="text/css">
+        .InfoCardTable  {border-collapse:collapse;border-spacing:2px;position: fixed;left: 10px; top: 30%}
+
+        .InfoCardTable td{border-color:black;border-style:hidden;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+            overflow:hidden;padding:10px 5px;word-break:normal;}
+
+        .InfoCardTable th{border-color:black;border-style:hidden;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+            font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+
+        .InfoCardTable .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+
+        .InfoCardTable .tg-0lax{text-align:left;vertical-align:top}
+    </style>
+
 
     <!-- Buttons to operate the animations while the client map is still being developed -->
     <!-- Move InfoCard Left, beginning the animation -->
@@ -209,8 +244,22 @@
 
 
 
-    <table id="foodTable"></table>
 <style>
+    #CountryName{
+        font-size: x-large;
+        text-align: center;
+        color: #005AA7;
+        font-family: "Agency FB";
+        position: fixed;
+        left: 50px;
+    }
+    #CountryDescription{
+        font-size: medium;
+        text-align: left;
+        font-style: italic;
+        position: fixed;
+        top: 100px;
+    }
     .operateButton{
         height: 50px;
         width: 50px;
@@ -267,15 +316,7 @@
     }
 
 </style>
-    <script>
-        function ANIInfoCardOpen(){
-            document.getElementById('InfoCardBox').style.animationName ='InfoCardOpen';
-        }
-        function ANIInfoCardClose(){
-            document.getElementById('InfoCardBox').style.animationName ='InfoCardClose';
-        }
 
-    </script>
 </body>
 
 </html>
