@@ -28,9 +28,9 @@ function prepareMap() {
         /*alert('country = ' + bindPopup(layer.features.properties.ADMIN)); */
 
         layer.on('click', function(e) {
-            console.log("cClick");
+            console.log("Click");
             let countryName = layer.feature.properties.ADMIN;
-            //alert('Country clicked is ' + countryName);
+            alert('Country clicked is ' + countryName);
             runInfoCard(countryName);
             //call function to retrieve data on this country
         });
