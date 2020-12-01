@@ -6,13 +6,6 @@
     <title>Title</title>
 
 
-
-
-
-
-
-
-
     <script>
 
     //Animation Scripts
@@ -126,8 +119,9 @@
         #map {
             position: relative;
             z-index: 0;
+            top: 5%;
             width: 100%;
-            height: 60%;
+            height: 75%;
         }
     </style>
     <div id='map' onclick="mapclick()"></div>
@@ -140,10 +134,24 @@
 
 
 
-
     <!-- Comments -->
     <div id = "wrapperusercomments">></div>
-    <div id = "usercomments"><h3>Leave a reply</h3>
+    <div id = "UComm"><h3>Leave a reply</h3>
+        <div id ="UComm_create">
+            <!-- Actual Comment form -->
+            <label for = "UCommbody_input" class ="UComm_labels">Leave a comment</label>
+            <textarea id ="UCommbody_input" class = "UComm_text"></textarea>
+
+            <label for = "UCommname_input" class = "UComm_labels">Enter Name</label>
+            <input type="text" id ="UCommname_input"/>
+
+
+
+        </div>
+        <button id = "UComm_submitbutton">Submit</button>
+        <div id = "usercommentsdisplay"></div>
+        <!-- Show comments -->
+
 
 
 
@@ -154,14 +162,19 @@
             width: 100%;
             max-width: 400px;
         }
-        #usercomments{
+        #UComm{
             border: 14px solid cornflowerblue;
             padding: 40px
 
         }
-        #usercomments * ,
-        #usercomments *:before,
-        #usercomments *:after {
+        #UComm_submitbutton{
+            background: black;
+            color: white;
+            border: none;
+        }
+        #UComm * ,
+        #UComm *:before,
+        #UComm *:after {
             -webkit-box-sizing: border-box;
             -mox-box-sizing: border-box;
             box-sizing: border-box;
@@ -187,7 +200,7 @@
 
  -->
     <div id="InfoCardBox" class="ANIInfoCard" >
-        <div id="CountryName"></div>
+       <!-- <div id="CountryName"></div>
         <div id="CountryDescription"></div>
         <table class="InfoCardTable">
             <thead>
@@ -218,7 +231,7 @@
                 <td class="tg-0lax"></td>
             </tr>
             </tbody>
-        </table>
+        </table> -->
     </div>
 
     <style type="text/css">
@@ -238,9 +251,9 @@
 
     <!-- Buttons to operate the animations while the client map is still being developed -->
     <!-- Move InfoCard Left, beginning the animation -->
-    <button id="LeftButton" class="operateButton" onclick="ANIInfoCardOpen()" />Start</button>
+    <button id="StartButton" class="operateButton" onclick="ANIInfoCardOpen()" />Start</button>
     <!-- Move InfoCard Right, ending the animation -->
-    <button id="RightButton" class="operateButton" onclick="ANIInfoCardClose()">End</button>
+    <button id="EndButton" class="operateButton" onclick="ANIInfoCardClose()">End</button>
 
 
 
@@ -264,13 +277,13 @@
         height: 50px;
         width: 50px;
     }
-    #RightButton{
+    #EndButton{
         position: fixed;
         bottom: 100px;
         right: 10px;
         background-color: blue;
     }
-    #LeftButton{
+    #StartButton{
         position: fixed;
         bottom: 50px;
         right: 10px;
@@ -284,7 +297,7 @@
         width: 200px;
         height: 500px;
         border: 5px solid;
-        border-color: #ff8042;
+        border-color: #355fce;
         background-color: white;
         border-radius: 34px;
         opacity: 0.1;
@@ -305,14 +318,8 @@
     /* Moves the InfoCard back to initial position while reducing opacity, fades off to one side of the screen */
     @keyframes InfoCardClose {
 
-        from {
-            transform: translateX(-250px);
-            opacity: 1.0
-        }
-        to {
-            transform: translateX(0px);
-            opacity: 0.2
-        }
+        from {transform: translateX(-250px);opacity: 1.0}
+        to {transform: translateX(0px);opacity: 0.2}
     }
 
 </style>

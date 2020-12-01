@@ -1,4 +1,25 @@
+function polystyle(feature) {
+    return {
+        //fillColor: 'yellow',
+        weight: 2,
+        opacity: 1,
+        color: 'red',  //Outline color
+        fillOpacity: 0
+    };
+}
+
+function polystyle2(feature) {
+    return {
+        fillColor: 'blue',
+        weight: 20,
+        opacity: 1,
+        color: 'green',  //Outline color
+        fillOpacity: 1
+    };
+}
+
 function prepareMap() {
+    
 
     let map = L.map('map');
 
@@ -21,7 +42,7 @@ function prepareMap() {
         pane: 'labels'
     }).addTo(map);
 
-    geojson = L.geoJson(countries).addTo(map);
+    geojson = L.geoJson(countries,{style: polystyle}).addTo(map);
 
     geojson.eachLayer(function (layer) {
         layer.bindPopup(layer.feature.properties.ADMIN);
@@ -30,8 +51,10 @@ function prepareMap() {
         layer.on('click', function(e) {
             console.log("cClick");
             let countryName = layer.feature.properties.ADMIN;
-            //alert('Country clicked is ' + countryName);
+            geojson = L.geoJson(countries["features"][1][0],{style: polystyle2}).addTo(map);
             runInfoCard(countryName);
+            //L.geoJson(polyData).addTo(map);
+
             //call function to retrieve data on this country
         });
 
@@ -40,3 +63,6 @@ function prepareMap() {
     map.setView({lat: 47.040182144806664, lng: 9.667968750000002}, 4);
 
 }
+
+
+
