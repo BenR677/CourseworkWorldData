@@ -15,6 +15,12 @@
     function ANIInfoCardClose(){
         document.getElementById('InfoCardBox').style.animationName ='InfoCardClose';
     }
+    function ANIUCommOpen(){
+        document.getElementById('UComm').style.animationName ='UCommOpen';
+    }
+    function ANIUCommClose(){
+        document.getElementById('UComm').style.animationName ='UCommClose';
+    }
     //API Scripts
     function getInfoCardData(CountryName) {
         console.log("Invoked getInfoCardData()");
@@ -103,12 +109,14 @@
         console.log(country);
         let CountryName = country;
         ANIInfoCardOpen();
+        ANIUCommOpen();
         getInfoCardData(CountryName);
     }
 
     function mapclick() {
             console.log("mapclicked")
             ANIInfoCardClose();
+            ANIUCommClose();
     }
     </script>
     <style>
@@ -135,23 +143,21 @@
 
 
     <!-- Comments -->
-    <div id = "wrapperusercomments">></div>
-    <div id = "UComm"><h3>Leave a reply</h3>
-        <div id ="UComm_create">
+    <div id = "wrapperusercomments"></div>
+    <div id = "UComm" class = "UCommANI">
             <!-- Actual Comment form -->
-            <label for = "UCommbody_input" class ="UComm_labels">Leave a comment</label>
-            <textarea id ="UCommbody_input" class = "UComm_text"></textarea>
+        <span id = "UCommTitle">Comments on France</span>
 
-            <label for = "UCommname_input" class = "UComm_labels">Enter Name</label>
-            <input type="text" id ="UCommname_input"/>
-
-
-
-        </div>
-        <button id = "UComm_submitbutton">Submit</button>
-        <div id = "usercommentsdisplay"></div>
         <!-- Show comments -->
-
+        <div id = "UCommCreate">
+        <span id = "UCommReplyTitle">Leave a reply</span><br>
+            <form>
+                <input  id = "UComm_NameEntryBox" type="text" placeholder="Enter Name">
+                <textarea placeholder="Enter body"></textarea>
+            </form>
+        <button id = "UComm_submitbutton">Submit</button>
+        </div>
+    </div>
 
 
 
@@ -162,23 +168,54 @@
             width: 100%;
             max-width: 400px;
         }
-        #UComm{
-            border: 14px solid cornflowerblue;
-            padding: 40px
+        #UComm {
+                 position: fixed;
+                 z-index: 2;
+                 bottom: 20%;
+                 left: -300px;
+                 width: 30%;
+                 height: 60%;
+                 border: 5px solid;
+                 border-color: #355fce;
+                 background-color: white;
+                 border-radius: 34px;
+                 opacity: 0.1;
+             }
+        .UCommANI {
+            animation-name: none;
+            animation-duration: 1s;
+            animation-timing-function: ease-out;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+        }
+        @keyframes UCommOpen {
+            from{transform: translateX(0px);opacity: 0.1}
+            to{transform:translateX(300px); opacity: 1.0}
+        }
+        /* Moves the InfoCard back to initial position while reducing opacity, fades off to one side of the screen */
+        @keyframes UCommClose {
 
+            from {transform: translateX(300px);opacity: 1.0}
+            to {transform: translateX(0px);opacity: 0.2}
         }
         #UComm_submitbutton{
             background: black;
             color: white;
             border: none;
         }
-        #UComm * ,
-        #UComm *:before,
-        #UComm *:after {
-            -webkit-box-sizing: border-box;
-            -mox-box-sizing: border-box;
-            box-sizing: border-box;
+        #UCommTitle{
+            text-align: center;
         }
+        #UCommCreate{
+            position: absolute;
+            bottom: 15%;
+            left: 5%;
+        }
+        #UComm_NameEntryBox{
+            opacity: 1;
+            font-family: a;
+        }
+
     </style>
 
 
@@ -200,7 +237,7 @@
 
  -->
     <div id="InfoCardBox" class="ANIInfoCard" >
-       <!-- <div id="CountryName"></div>
+       <div id="CountryName"></div>
         <div id="CountryDescription"></div>
         <table class="InfoCardTable">
             <thead>
@@ -231,7 +268,7 @@
                 <td class="tg-0lax"></td>
             </tr>
             </tbody>
-        </table> -->
+        </table>
     </div>
 
     <style type="text/css">
