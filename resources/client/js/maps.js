@@ -51,7 +51,7 @@ function prepareMap() {
         layer.on('click', function(e) {
             console.log("cClick");
             let countryName = layer.feature.properties.ADMIN;
-            geojson = L.geoJson(countries["features"][1][0],{style: polystyle2}).addTo(map);
+            //geojson = L.geoJson(countries["features"][1][0],{style: polystyle2}).addTo(map);
             runInfoCard(countryName);
             //L.geoJson(polyData).addTo(map);
 

@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,75 +7,77 @@
 
     <script>
 
-    //Animation Scripts
-    function ANIInfoCardOpen(){
-        document.getElementById('InfoCardBox').style.animationName ='InfoCardOpen';
-    }
-    function ANIInfoCardClose(){
-        document.getElementById('InfoCardBox').style.animationName ='InfoCardClose';
-    }
-    function ANIUCommOpen(){
-        document.getElementById('UComm').style.animationName ='UCommOpen';
-    }
-    function ANIUCommClose(){
-        document.getElementById('UComm').style.animationName ='UCommClose';
-    }
-    //API Scripts
-    function getInfoCardData(CountryName) {
-        console.log("Invoked getInfoCardData()");
-
-        const NameEnglish = CountryName; //Sends data from drop down box, to be put into SQL WHERE field
-        const url = "/countryStats/getStats/";	// Retrieve JSON from server with URL
-
-        fetch(url + NameEnglish, {
-            method: "GET",
-        }).then(response => {
-            return response.json();                 //Return response to JSON
-        }).then(response => {
-            if (response.hasOwnProperty("Error")) { //Checks if response from server has a key "Error"
-                alert(JSON.stringify(response));    // If it does, convert JSON object to string and alert
-            } else {
-                console.log(response);
-                formatInfoCardStats(response);          //This function will create an HTML table of the data
-                formatSuperData(response);
-            }
-        });
-    }
-
-    function formatInfoCardStats(StatsData) {
-        formatSuperData(StatsData);
-        console.log("Invoked formatInfoCardStats() ");
-        console.log(StatsData);
-        console.log(JSON.stringify(StatsData));
-        console.log(StatsData[0].CountryID);
-
-        let keys = Object.keys(StatsData[0]);
-        let values = Object.values(StatsData[0])
-        console.log(values[0])
-        console.log(keys[0]);
-
-        //StatIndex is the index of row in the table the Statistic is added too
-        for (let StatIndex = 1; StatIndex<4; StatIndex++){
-            document.getElementById("StatTable"+[StatIndex]).innerHTML =keys[StatIndex];
-            document.getElementById("Value"+[StatIndex]).innerHTML = values[StatIndex];
+        //Animation Scripts
+        function ANIInfoCardOpen(){
+            document.getElementById('InfoCardBox').style.animationName ='InfoCardOpen';
+        }
+        function ANIInfoCardClose(){
+            document.getElementById('InfoCardBox').style.animationName ='InfoCardClose';
+        }
+        function ANIUCommOpen(){
+            document.getElementById('UComm').style.animationName ='UCommOpen';
+        }
+        function ANIUCommClose(){
+            document.getElementById('UComm').style.animationName ='UCommClose';
         }
 
-    }
-    function formatSuperData(StatsData) {
-        console.log(StatsData[0].NameEnglish);
-        document.getElementById("CountryName").innerHTML = StatsData[0].NameEnglish;
-        document.getElementById("CountryDescription").innerHTML = StatsData[0].Description;
-    }
+
+        //API Scripts
+        function getInfoCardData(CountryName) {
+            console.log("Invoked getInfoCardData()");
+
+            const NameEnglish = CountryName; //Sends data from search results, to be put into SQL WHERE field
+            const url = "/countryStats/getStats/";	// Retrieve JSON from server with URL
+
+            fetch(url + NameEnglish, {
+                method: "GET",
+            }).then(response => {
+                return response.json();                 //Return response to JSON
+            }).then(response => {
+                if (response.hasOwnProperty("Error")) { //Checks if response from server has a key "Error"
+                    alert(JSON.stringify(response));    // If it does, convert JSON object to string and alert
+                } else {
+                    console.log(response);
+                    formatInfoCardStats(response);          //This function will create an HTML table of the data
+                    formatInfoCardMetaData(response);
+                }
+            });
+        }
+
+        function formatInfoCardStats(StatsData) {
+            formatInfoCardMetaData(StatsData);
+            console.log("Invoked formatInfoCardStats() ");
+            console.log(StatsData);
+            console.log(JSON.stringify(StatsData));
+            console.log(StatsData[0].CountryID);
+
+            let keys = Object.keys(StatsData[0]);
+            let values = Object.values(StatsData[0])
+            console.log(values[0])
+            console.log(keys[0]);
+
+            //StatIndex is the index of row in the table the Statistic is added too
+            for (let StatIndex = 1; StatIndex<4; StatIndex++){
+                document.getElementById("StatTable"+[StatIndex]).innerHTML =keys[StatIndex];
+                document.getElementById("Value"+[StatIndex]).innerHTML = values[StatIndex];
+            }
+
+        }
+        function formatInfoCardMetaData(StatsData) {
+            console.log(StatsData[0].NameEnglish);
+            document.getElementById("CountryName").innerHTML = StatsData[0].NameEnglish;
+            document.getElementById("CountryDescription").innerHTML = StatsData[0].Description;
+        }
 
 
-</script>
+    </script>
 </head>
 <body onload="prepareMap()">
-    <select name = "Countries" id="CountryDropBox">
-        <option value="1">UK</option>
-        <option value="2">France</option>
-    </select>
-    <button onclick="getInfoCardData()">Click me</button>
+<select name = "Countries" id="CountryDropBox">
+    <option value="1">UK</option>
+    <option value="2">France</option>
+</select>
+<button onclick="getInfoCardData()">Click me</button>
 
 
 <!--
@@ -94,18 +95,18 @@
 
 
 -->
-    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-
-
-    <script type="text/javascript" src="/client/js/countries.js"></script>
-    <script type="text/javascript" src="/client/js/maps.js"></script>
-    <script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 
 
-        function runInfoCard(country){
+<script type="text/javascript" src="/client/js/countries.js"></script>
+<script type="text/javascript" src="/client/js/maps.js"></script>
+<script>
+
+
+    function runInfoCard(country){
         console.log(country);
         let CountryName = country;
         ANIInfoCardOpen();
@@ -114,183 +115,222 @@
     }
 
     function mapclick() {
-            console.log("mapclicked")
-            ANIInfoCardClose();
-            ANIUCommClose();
+        console.log("mapclicked")
+        ANIInfoCardClose();
+        ANIUCommClose();
     }
-    </script>
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-        #map {
-            position: relative;
-            z-index: 0;
-            top: 5%;
-            width: 100%;
-            height: 75%;
-        }
-    </style>
-    <div id='map' onclick="mapclick()"></div>
+</script>
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+    #map {
+        position: relative;
+        z-index: 0;
+        top: 5%;
+        width: 100%;
+        height: 75%;
+    }
+</style>
+
+<div id='map' onclick="mapclick()"></div>
 
 
 
+<!--
+ ______   ______   ___ __ __   ___ __ __   ______   ___   __    _________  ______
+/_____/\ /_____/\ /__//_//_/\ /__//_//_/\ /_____/\ /__/\ /__/\ /________/\/_____/\
+\:::__\/ \:::_ \ \\::\| \| \ \\::\| \| \ \\::::_\/_\::\_\\  \ \\__.::.__\/\::::_\/_
+ \:\ \  __\:\ \ \ \\:.      \ \\:.      \ \\:\/___/\\:. `-\  \ \  \::\ \   \:\/___/\
+  \:\ \/_/\\:\ \ \ \\:.\-/\  \ \\:.\-/\  \ \\::___\/_\:. _    \ \  \::\ \   \_::._\:\
+   \:\_\ \ \\:\_\ \ \\. \  \  \ \\. \  \  \ \\:\____/\\. \`-\  \ \  \::\ \    /____\:\
+    \_____\/ \_____\/ \__\/ \__\/ \__\/ \__\/ \_____\/ \__\/ \__\/   \__\/    \_____\/
 
+-->
+<script>
+    "use strict";
 
+        function UCommPostComment(){
+            console.log("UCommPostComment")
+            let url = "/userComment/postComment";
+            const formData = new FormData(document.getElementById("UCommPostForm"));
 
-
-
-
-    <!-- Comments -->
-    <div id = "wrapperusercomments"></div>
-    <div id = "UComm" class = "UCommANI">
-            <!-- Actual Comment form -->
-        <span id = "UCommTitle">Comments on France</span>
-
-        <!-- Show comments -->
-        <div id = "UCommCreate">
-        <span id = "UCommReplyTitle">Leave a reply</span><br>
-            <form>
-                <input  id = "UComm_NameEntryBox" type="text" placeholder="Enter Name">
-                <textarea placeholder="Enter body"></textarea>
-            </form>
-        <button id = "UComm_submitbutton">Submit</button>
-        </div>
-    </div>
-
-
-
-    </div>
-    <style>
-        #wrapperusercomments{
-            margin: 10%;
-            width: 100%;
-            max-width: 400px;
-        }
-        #UComm {
-                 position: fixed;
-                 z-index: 2;
-                 bottom: 20%;
-                 left: -300px;
-                 width: 30%;
-                 height: 60%;
-                 border: 5px solid;
-                 border-color: #355fce;
-                 background-color: white;
-                 border-radius: 34px;
-                 opacity: 0.1;
-             }
-        .UCommANI {
-            animation-name: none;
-            animation-duration: 1s;
-            animation-timing-function: ease-out;
-            animation-iteration-count: 1;
-            animation-fill-mode: forwards;
-        }
-        @keyframes UCommOpen {
-            from{transform: translateX(0px);opacity: 0.1}
-            to{transform:translateX(300px); opacity: 1.0}
-        }
-        /* Moves the InfoCard back to initial position while reducing opacity, fades off to one side of the screen */
-        @keyframes UCommClose {
-
-            from {transform: translateX(300px);opacity: 1.0}
-            to {transform: translateX(0px);opacity: 0.2}
-        }
-        #UComm_submitbutton{
-            background: black;
-            color: white;
-            border: none;
-        }
-        #UCommTitle{
-            text-align: center;
-        }
-        #UCommCreate{
-            position: absolute;
-            bottom: 15%;
-            left: 5%;
-        }
-        #UComm_NameEntryBox{
-            opacity: 1;
-            font-family: a;
+            console.log(formData);
+            fetch(url, {
+                method: "POST",
+                body: formData,
+            }).then(response => {
+                return response.json();
+            }).then(response => {
+                if (response.hasOwnProperty("Error")){
+                    alert(JSON.stringify(response));
+                } else {
+                    alert("yes");
+                }
+            })
+            console.log("yes??");
         }
 
-    </style>
+
+
+        function UCommPostTEST(){
+            console.log("UCommPostComment")
+            //var url = "/userComments/postComment";
+            //var formData = new FormData(document.getElementById("UCommPostForm"));
+            var formData = new FormData(document.getElementById("UCommPostForm"));
+            alert(formData);}
+
+</script>
 
 
 
-    <!--
+<!-- Comments -->
+<div id = "UComm" class = "UCommANI">
+    <!-- Actual Comment form -->
+    <span id = "UCommTitle">Comments on France</span>
 
-                  ___           ___           ___           ___           ___           ___
-                 /\  \         /\__\         /\  \         /\__\         /\  \         /\  \         _____
-    ___          \:\  \       /:/ _/_       /::\  \       /:/  /        /::\  \       /::\  \       /::\  \
-   /\__\          \:\  \     /:/ /\__\     /:/\:\  \     /:/  /        /:/\:\  \     /:/\:\__\     /:/\:\  \
-  /:/__/      _____\:\  \   /:/ /:/  /    /:/  \:\  \   /:/  /  ___   /:/ /::\  \   /:/ /:/  /    /:/  \:\__\
- /::\  \     /::::::::\__\ /:/_/:/  /    /:/__/ \:\__\ /:/__/  /\__\ /:/_/:/\:\__\ /:/_/:/__/___ /:/__/ \:|__|
- \/\:\  \__  \:\~~\~~\/__/ \:\/:/  /     \:\  \ /:/  / \:\  \ /:/  / \:\/:/  \/__/ \:\/:::::/  / \:\  \ /:/  /
-  ~~\:\/\__\  \:\  \        \::/__/       \:\  /:/  /   \:\  /:/  /   \::/__/       \::/~~/~~~~   \:\  /:/  /
-     \::/  /   \:\  \        \:\  \        \:\/:/  /     \:\/:/  /     \:\  \        \:\~~\        \:\/:/  /
-     /:/  /     \:\__\        \:\__\        \::/  /       \::/  /       \:\__\        \:\__\        \::/  /
-     \/__/       \/__/         \/__/         \/__/         \/__/         \/__/         \/__/         \/__/
+    <!-- Show comments -->
+    <span id = "UCommReplyTitle">Leave a reply</span><br>
 
-
- -->
-    <div id="InfoCardBox" class="ANIInfoCard" >
-       <div id="CountryName"></div>
-        <div id="CountryDescription"></div>
-        <table class="InfoCardTable">
-            <thead>
-            <tr>
-                <th class="tg-0pky">Statistic</th>
-                <th class="tg-0lax">Value</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td id="StatTable1"></td>
-                <td id="Value1"></td>
-            </tr>
-            <tr>
-                <td id= "StatTable2"></td>
-                <td id="Value2"></td>
-            </tr>
-            <tr>
-                <td id="StatTable3"></td>
-                <td id= "Value3"></td>
-            </tr>
-            <tr>
-                <td class="tg-0lax"></td>
-                <td class="tg-0lax"></td>
-            </tr>
-            <tr>
-                <td class="tg-0lax"></td>
-                <td class="tg-0lax"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <style type="text/css">
-        .InfoCardTable  {border-collapse:collapse;border-spacing:2px;position: fixed;left: 10px; top: 30%}
-
-        .InfoCardTable td{border-color:black;border-style:hidden;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-            overflow:hidden;padding:10px 5px;word-break:normal;}
-
-        .InfoCardTable th{border-color:black;border-style:hidden;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-            font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-
-        .InfoCardTable .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-
-        .InfoCardTable .tg-0lax{text-align:left;vertical-align:top}
-    </style>
+    <form id = "UCommPostForm">
+        <input  name = "Title" id="UComm_NameEntryBox" type="text" placeholder="Enter Name">
+        <textarea name = "Body" id="UComm_BodyEntryBox" placeholder="Enter body"></textarea>
+        <input type="button" value = "Submit" onclick="UCommPostComment()">
+    </form>
+</div>
 
 
-    <!-- Buttons to operate the animations while the client map is still being developed -->
-    <!-- Move InfoCard Left, beginning the animation -->
-    <button id="StartButton" class="operateButton" onclick="ANIInfoCardOpen()" />Start</button>
-    <!-- Move InfoCard Right, ending the animation -->
-    <button id="EndButton" class="operateButton" onclick="ANIInfoCardClose()">End</button>
+
+</div>
+<style>
+    #wrapperusercomments{
+        margin: 10%;
+        width: 100%;
+        max-width: 400px;
+    }
+    #UComm {
+        position: fixed;
+        z-index: 2;
+        bottom: 20%;
+        left: -250px;
+        width: 30%;
+        height: 60%;
+        border: 5px solid;
+        border-color: #355fce;
+        background-color: white;
+        border-radius: 34px;
+        opacity: 0.1;
+    }
+    .UCommANI {
+        animation-name: none;
+        animation-duration: 1s;
+        animation-timing-function: ease-out;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
+    }
+    @keyframes UCommOpen {
+        from{transform: translateX(0px);opacity: 0.1}
+        to{transform:translateX(300px); opacity: 1.0}
+    }
+    /* Moves the InfoCard back to initial position while reducing opacity, fades off to one side of the screen */
+    @keyframes UCommClose {
+
+        from {transform: translateX(300px);opacity: 1.0}
+        to {transform: translateX(0px);opacity: 0.2}
+    }
+    #UComm_submitbutton{
+        background: black;
+        color: white;
+        border: none;
+    }
+    #UCommTitle{
+        text-align: center;
+    }
+    #UCommCreate{
+        position: absolute;
+        bottom: 15%;
+        left: 5%;
+    }
+    #UComm_NameEntryBox{
+        opacity: 1;
+        font-family: arial;
+    }
+
+</style>
+
+
+<!--
+
+              ___           ___           ___           ___           ___           ___
+             /\  \         /\__\         /\  \         /\__\         /\  \         /\  \         _____
+___          \:\  \       /:/ _/_       /::\  \       /:/  /        /::\  \       /::\  \       /::\  \
+/\__\          \:\  \     /:/ /\__\     /:/\:\  \     /:/  /        /:/\:\  \     /:/\:\__\     /:/\:\  \
+/:/__/      _____\:\  \   /:/ /:/  /    /:/  \:\  \   /:/  /  ___   /:/ /::\  \   /:/ /:/  /    /:/  \:\__\
+/::\  \     /::::::::\__\ /:/_/:/  /    /:/__/ \:\__\ /:/__/  /\__\ /:/_/:/\:\__\ /:/_/:/__/___ /:/__/ \:|__|
+\/\:\  \__  \:\~~\~~\/__/ \:\/:/  /     \:\  \ /:/  / \:\  \ /:/  / \:\/:/  \/__/ \:\/:::::/  / \:\  \ /:/  /
+~~\:\/\__\  \:\  \        \::/__/       \:\  /:/  /   \:\  /:/  /   \::/__/       \::/~~/~~~~   \:\  /:/  /
+ \::/  /   \:\  \        \:\  \        \:\/:/  /     \:\/:/  /     \:\  \        \:\~~\        \:\/:/  /
+ /:/  /     \:\__\        \:\__\        \::/  /       \::/  /       \:\__\        \:\__\        \::/  /
+ \/__/       \/__/         \/__/         \/__/         \/__/         \/__/         \/__/         \/__/
+
+
+-->
+<div id="InfoCardBox" class="ANIInfoCard" >
+    <div id="CountryName"></div>
+    <div id="CountryDescription"></div>
+    <table class="InfoCardTable">
+        <thead>
+        <tr>
+            <th class="tg-0pky">Statistic</th>
+            <th class="tg-0lax">Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td id="StatTable1"></td>
+            <td id="Value1"></td>
+        </tr>
+        <tr>
+            <td id= "StatTable2"></td>
+            <td id="Value2"></td>
+        </tr>
+        <tr>
+            <td id="StatTable3"></td>
+            <td id= "Value3"></td>
+        </tr>
+        <tr>
+            <td class="tg-0lax"></td>
+            <td class="tg-0lax"></td>
+        </tr>
+        <tr>
+            <td class="tg-0lax"></td>
+            <td class="tg-0lax"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<style type="text/css">
+    .InfoCardTable  {border-collapse:collapse;border-spacing:2px;position: fixed;left: 10px; top: 30%}
+
+    .InfoCardTable td{border-color:black;border-style:hidden;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+
+    .InfoCardTable th{border-color:black;border-style:hidden;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+
+    .InfoCardTable .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+
+    .InfoCardTable .tg-0lax{text-align:left;vertical-align:top}
+</style>
+
+
+<!-- Buttons to operate the animations while the client map is still being developed -->
+<!-- Move InfoCard Left, beginning the animation -->
+<button id="StartButton" class="operateButton" onclick="ANIInfoCardOpen()" />Start</button>
+<!-- Move InfoCard Right, ending the animation -->
+<button id="EndButton" class="operateButton" onclick="ANIInfoCardClose()">End</button>
 
 
 
@@ -363,4 +403,3 @@
 
 </body>
 
-</html>
