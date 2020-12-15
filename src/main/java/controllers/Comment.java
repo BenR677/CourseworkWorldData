@@ -10,23 +10,25 @@ import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@Path("userComment/")
+@Path("comment/")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
 @Produces(MediaType.APPLICATION_JSON)
-public class PostComment {
-    @POST
-    @Path("postComment/")
 
-    public String userCommentpostComment(@FormDataParam("UComm_NameEntryBox") String Title, @FormDataParam("UComm_BodyEntryBox") String Body) {
+public class Comment {
+
+    @POST
+    @Path("add")
+    public String addComment (@FormDataParam("title") String title, @FormDataParam("body") String body) {
+        System.out.println("Invoked addComment()");
         try {
             PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Comments (Title, Body) VALUES (?, ?)");
-            ps.setString(1, Title);
-            ps.setString(2, Body);
+            ps.setString(1, title);
+            ps.setString(2, body);
             ps.execute();
-            return"{\\\"OK\\\": \\\"Added food.\\\"}";
+            return"{\"OK\": \"Added comment.\"}";
         } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
-            return "{\"Error\": \"Unable to list items.  Error code xx.\"}";
+            return "{\"Error\": \"Unable add comment.  Error code xx.\"}";
         }
     }
 }

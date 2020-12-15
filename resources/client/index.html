@@ -153,7 +153,7 @@
 
         function UCommPostComment(){
             console.log("UCommPostComment")
-            let url = "/userComment/postComment";
+            let url = "/comment/add";
             const formData = new FormData(document.getElementById("UCommPostForm"));
 
             console.log(formData);
@@ -168,7 +168,7 @@
                 } else {
                     alert("yes");
                 }
-            })
+            });
             console.log("yes??");
         }
 
@@ -194,8 +194,8 @@
     <span id = "UCommReplyTitle">Leave a reply</span><br>
 
     <form id = "UCommPostForm">
-        <input  name = "Title" id="UComm_NameEntryBox" type="text" placeholder="Enter Name">
-        <textarea name = "Body" id="UComm_BodyEntryBox" placeholder="Enter body"></textarea>
+        <input  name = "title" id="UComm_NameEntryBox" type="text" placeholder="Enter Name">
+        <textarea name = "body" id="UComm_BodyEntryBox" placeholder="Enter body"></textarea>
         <input type="button" value = "Submit" onclick="UCommPostComment()">
     </form>
 </div>
