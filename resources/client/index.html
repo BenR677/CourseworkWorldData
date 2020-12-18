@@ -151,7 +151,7 @@
 <script>
     "use strict";
 
-    function PostComment(){
+    function postComment(){
         console.log("Invoked PostComment function")
         let url = "/comment/add";
         const formData = new FormData(document.getElementById("newCommentForm"));
@@ -191,6 +191,26 @@
             }
         });
     }
+    function formatgetComment(CommentsData){
+        document.getElementById("postedCommentContainer").innerHTML = "";
+        let newComment = "";
+        console.log(JSON.stringify(CommentsData));
+        for (let i = 0, l = CommentsData.length; i < l; i++) {
+            let currentComment = CommentsData[i];
+            //let obiwan = obj.Body
+            console.log(currentComment.Body);
+            newComment += "<div class='postedComment'>" +
+                    "<text>" +currentComment.PostDate+ "</text>" + "<br>" +
+                    "<text>" +currentComment.Title+ "</text>" +  "<br>" +
+                    "<text>" +currentComment.Body+ "</text>"+ "<br>" +
+                    "</div>";
+
+            console.log(newComment);
+        }
+        document.getElementById("postedCommentContainer").innerHTML += newComment;
+        newComment = "";
+    }
+
 
     function newCommentData(StatsData){
         //Send CountryID to CountryID form input
@@ -207,14 +227,7 @@
 
     }
 
-    function formatgetComment(CommentsData){
-        console.log(JSON.stringify(CommentsData));
-        let keys = Object.keys(CommentsData[0]);
-        let values = Object.values(CommentsData[0]);
-        console.log("Comment Values" + values);
-        console.log("Comment keys" + keys);
 
-    }
 
 </script>
 
@@ -254,16 +267,38 @@
             </div>
 
         </fieldset>
-        <input type="button" value = "Submit" onclick="PostComment()">
+        <input type="button" value = "Submit" onclick="postComment()">
     </form>
 
     </div>
     <div id="postedCommentContainer">
+        <!-- Demo Container -->
+
     </div>
 </div>
 
 
+<style>
+    #postedCommentContainer{
+        overflow: auto;
+        border: black;
+        height: 50%;
+        width: 100%;
+        z-index: 11;
+        border: 5px solid;
+        border-color: #fc4a1a;
 
+    }
+    .postedComment{
+        font-family: Arial;
+        height: 30%;
+        width: 70%;
+        border: 4px solid;
+        border-color: black;
+        z-index: 10;
+
+    }
+</style>
 
 <!--
                     ___           ___           ___           ___           ___           ___
