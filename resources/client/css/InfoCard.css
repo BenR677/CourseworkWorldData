@@ -1,0 +1,63 @@
+#CountryName{
+    font-size: x-large;
+    text-align: center;
+    color: #005AA7;
+    font-family: "Agency FB";
+    position: fixed;
+    left: 50px;
+}
+#CountryDescription{
+    font-size: medium;
+    text-align: left;
+    font-style: italic;
+    position: fixed;
+    top: 100px;
+}
+.operateButton{
+    height: 50px;
+    width: 50px;
+}
+#EndButton{
+    position: fixed;
+    bottom: 100px;
+    right: 10px;
+    background-color: blue;
+}
+#StartButton{
+    position: fixed;
+    bottom: 50px;
+    right: 10px;
+    background-color: red;}
+
+#InfoCardBox {
+    position: fixed;
+    z-index: 2;
+    bottom: 20%;
+    right: -200px;
+    width: 200px;
+    height: 500px;
+    border: 5px solid;
+    border-color: #355fce;
+    background-color: white;
+    border-radius: 34px;
+    opacity: 0.1;
+}
+
+.ANIInfoCard{
+    animation-name: none;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+/* */
+@keyframes InfoCardOpen {
+    from{transform: translateX(0px);opacity: 0.2}
+    to{transform:translateX(-250px); opacity: 1.0}
+}
+/* Moves the InfoCard back to initial position while reducing opacity, fades off to one side of the screen */
+@keyframes InfoCardClose {
+
+    from {transform: translateX(-250px);opacity: 1.0}
+    to {transform: translateX(0px);opacity: 0.2}
+}
