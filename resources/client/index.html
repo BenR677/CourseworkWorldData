@@ -4,8 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
 
-    <link rel="stylesheet" href="css\InfoCard.css">
-    <link rel="stylesheet" href="css\CommentStyle.css">
+
     <script>
 
         //Animation Scripts
@@ -15,11 +14,11 @@
         function ANIInfoCardClose(){
             document.getElementById('InfoCardBox').style.animationName ='InfoCardClose';
         }
-        function CommentBoxOpenFunction(){
-            document.getElementById('CommentBox').style.animationName ='CommentBoxOpenAnimation';
+        function ANIUCommOpen(){
+            document.getElementById('UComm').style.animationName ='UCommOpen';
         }
-        function CommentBoxCloseFunction(){
-            document.getElementById('CommentBox').style.animationName ='CommentBoxCloseAnimation';
+        function ANIUCommClose(){
+            document.getElementById('UComm').style.animationName ='UCommClose';
         }
 
 
@@ -28,7 +27,7 @@
             console.log("Invoked getInfoCardData()");
 
             const NameEnglish = CountryName; //Sends data from search results, to be put into SQL WHERE field
-            const url = "/countryStat/get/";	// Retrieve JSON from server with URL
+            const url = "/countryStats/getStats/";	// Retrieve JSON from server with URL
 
             fetch(url + NameEnglish, {
                 method: "GET",
@@ -39,7 +38,6 @@
                     alert(JSON.stringify(response));    // If it does, convert JSON object to string and alert
                 } else {
                     console.log(response);
-                    console.log("InfoCardData successfully retrieved");
                     formatInfoCardStats(response);          //This function will create an HTML table of the data
                     formatInfoCardMetaData(response);
                 }
@@ -51,13 +49,10 @@
             console.log("Invoked formatInfoCardStats() ");
             console.log(StatsData);
             console.log(JSON.stringify(StatsData));
-            console.log("Selected Country ID" + StatsData[0].CountryID);
-            newCommentData(StatsData);
-            getComment(StatsData);
-
+            console.log(StatsData[0].CountryID);
 
             let keys = Object.keys(StatsData[0]);
-            let values = Object.values(StatsData[0]);
+            let values = Object.values(StatsData[0])
             console.log(values[0])
             console.log(keys[0]);
 
@@ -75,14 +70,18 @@
         }
 
 
-
     </script>
 </head>
 <body onload="prepareMap()">
+<select name = "Countries" id="CountryDropBox">
+    <option value="1">UK</option>
+    <option value="2">France</option>
+</select>
 <button onclick="getInfoCardData()">Click me</button>
 
 
 <!--
+
     88b           d88
     888b         d888
     88`8b       d8'88
@@ -93,6 +92,8 @@
     88     `8'     88 `"8bbdP"Y8 88`YbbdP"'
                                  88
                                  88
+
+
 -->
 <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
 
@@ -107,18 +108,16 @@
 
     function runInfoCard(country){
         console.log(country);
-        ANIInfoCardClose();
         let CountryName = country;
         ANIInfoCardOpen();
-        document.getElementById("newCommentTitle").innerHTML = "Leave a comment on " + CountryName + "!";
-        CommentBoxOpenFunction();
+        ANIUCommOpen();
         getInfoCardData(CountryName);
     }
 
     function mapclick() {
         console.log("mapclicked")
         ANIInfoCardClose();
-        CommentBoxCloseFunction();
+        ANIUCommClose();
     }
 </script>
 <style>
@@ -147,171 +146,135 @@
   \:\ \/_/\\:\ \ \ \\:.\-/\  \ \\:.\-/\  \ \\::___\/_\:. _    \ \  \::\ \   \_::._\:\
    \:\_\ \ \\:\_\ \ \\. \  \  \ \\. \  \  \ \\:\____/\\. \`-\  \ \  \::\ \    /____\:\
     \_____\/ \_____\/ \__\/ \__\/ \__\/ \__\/ \_____\/ \__\/ \__\/   \__\/    \_____\/
+
 -->
 <script>
     "use strict";
 
-    function postComment(){
-        console.log("Invoked PostComment function")
-        let url = "/comment/add";
-        const formData = new FormData(document.getElementById("newCommentForm"));
+        function UCommPostComment(){
+            console.log("UCommPostComment")
+            let url = "/comment/add";
+            const formData = new FormData(document.getElementById("UCommPostForm"));
 
-        console.log(formData);
-        fetch(url, {
-            method: "POST",
-            body: formData,
-        }).then(response => {
-            return response.json();
-        }).then(response => {
-            if (response.hasOwnProperty("Error")){
-                alert(JSON.stringify(response));
-            } else {
-                console.log("New Comment successfully stored");
-            }
-        });
-    }
-
-    function getComment(StatsData) {
-        let CountryID = StatsData[0].CountryID; //CountryID to be send along with GET request
-        console.log("Invoked getComment()");
-
-        const url = "/comment/get/";	// Retrieve JSON from server with URL
-
-        fetch(url + CountryID, {
-            method: "GET",
-        }).then(response => {
-            return response.json();                 //Return response to JSON
-        }).then(response => {
-            if (response.hasOwnProperty("Error")) { //Checks if response from server has a key "Error"
-                alert(JSON.stringify(response));    // If it does, convert JSON object to string and alert
-            } else {
-                console.log(response);
-                console.log("Comments successfully retrieved");
-                formatgetComment(response); //Format the response
-            }
-        });
-    }
-    function formatgetComment(CommentsData){
-        document.getElementById("postedCommentContainer").innerHTML = "";
-        let newComment = "";
-        console.log(JSON.stringify(CommentsData));
-        for (let i = 0, l = CommentsData.length; i < l; i++) {
-            let currentComment = CommentsData[i];
-            //let obiwan = obj.Body
-            console.log(currentComment.Body);
-            newComment += "<div class='postedComment'>" +
-                    "<text>" +currentComment.PostDate+ "</text>" + "<br>" +
-                    "<text>" +currentComment.Title+ "</text>" +  "<br>" +
-                    "<text>" +currentComment.Body+ "</text>"+ "<br>" +
-                    "</div>";
-
-            console.log(newComment);
+            console.log(formData);
+            fetch(url, {
+                method: "POST",
+                body: formData,
+            }).then(response => {
+                return response.json();
+            }).then(response => {
+                if (response.hasOwnProperty("Error")){
+                    alert(JSON.stringify(response));
+                } else {
+                    alert("yes");
+                }
+            });
+            console.log("yes??");
         }
-        document.getElementById("postedCommentContainer").innerHTML += newComment;
-        newComment = "";
-    }
 
 
-    function newCommentData(StatsData){
-        //Send CountryID to CountryID form input
-        document.getElementById("newComment_CountryID").value = StatsData[0].CountryID;
-        let currentDate = new Date();
-        let postDate = currentDate.getDate() + "/"
-            + (currentDate.getMonth()+1)  + "/"
-            + currentDate.getFullYear() + " @ "
-            + currentDate.getHours() + ":"
-            + currentDate.getMinutes() + ":"
-            + currentDate.getSeconds();
-        document.getElementById("newComment_PostDate").value = postDate
-        console.log(postDate);
 
-    }
-
-
+        function UCommPostTEST(){
+            console.log("UCommPostComment")
+            //var url = "/userComments/postComment";
+            //var formData = new FormData(document.getElementById("UCommPostForm"));
+            var formData = new FormData(document.getElementById("UCommPostForm"));
+            alert(formData);}
 
 </script>
 
 
 
 <!-- Comments -->
-<div id = "CommentBox" class = "CommentBoxAnimationController">
+<div id = "UComm" class = "UCommANI">
     <!-- Actual Comment form -->
-    <div id="newCommentFormContainer">
-        <text id="newCommentTitle"></text>
-    <form id = "newCommentForm">
-        <input type="hidden" name = "newCommentCountryID" id="newComment_CountryID" value ="">
-        <input type = "hidden" name = "newCommentPostDate" id="newComment_PostDate" value ="" >
+    <span id = "UCommTitle">Comments on France</span>
 
-        <input  name = "newCommentTitle" id="newCommentForm_Title" type="text" placeholder="Enter Title">
-        <textarea name = "newCommentBody" id="newCommentForm_Body" placeholder="Enter body"></textarea>
-        <fieldset class="rating">
-            <legend>Rating</legend>
+    <!-- Show comments -->
+    <span id = "UCommReplyTitle">Leave a reply</span><br>
 
-            <input id="StarForm1" type="radio" name="StarRating" value="1">
-            <label for="StarForm1">1 star</label>
-            <input id="StarFrom2" type="radio" name="StarRating" value="2">
-            <label for="StarFrom2">2 stars</label>
-            <input id="StarForm3" type="radio" name="StarRating" value="3">
-            <label for="StarForm3">3 stars</label>
-            <input id="StarForm4" type="radio" name="StarRating" value="4">
-            <label for="StarForm4">4 stars</label>
-            <input id="StarForm5" type="radio" name="StarRating" value="5">
-            <label for="StarForm5">5 stars</label>
-
-            <div class="stars">
-                <label for="StarForm1" aria-label="1 star" title="1 star"></label>
-                <label for="StarFrom2" aria-label="2 stars" title="2 stars"></label>
-                <label for="StarForm3" aria-label="3 stars" title="3 stars"></label>
-                <label for="StarForm4" aria-label="4 stars" title="4 stars"></label>
-                <label for="StarForm5" aria-label="5 stars" title="5 stars"></label>
-            </div>
-
-        </fieldset>
-        <input type="button" value = "Submit" onclick="postComment()">
+    <form id = "UCommPostForm">
+        <input  name = "title" id="UComm_NameEntryBox" type="text" placeholder="Enter Name">
+        <textarea name = "body" id="UComm_BodyEntryBox" placeholder="Enter body"></textarea>
+        <input type="button" value = "Submit" onclick="UCommPostComment()">
     </form>
-
-    </div>
-    <div id="postedCommentContainer">
-        <!-- Demo Container -->
-
-    </div>
 </div>
 
 
+
+</div>
 <style>
-    #postedCommentContainer{
-        overflow: auto;
-        border: black;
-        height: 50%;
+    #wrapperusercomments{
+        margin: 10%;
         width: 100%;
-        z-index: 11;
+        max-width: 400px;
+    }
+    #UComm {
+        position: fixed;
+        z-index: 2;
+        bottom: 20%;
+        left: -250px;
+        width: 30%;
+        height: 60%;
         border: 5px solid;
-        border-color: #fc4a1a;
-
+        border-color: #355fce;
+        background-color: white;
+        border-radius: 34px;
+        opacity: 0.1;
     }
-    .postedComment{
-        font-family: Arial;
-        height: 30%;
-        width: 70%;
-        border: 4px solid;
-        border-color: black;
-        z-index: 10;
-
+    .UCommANI {
+        animation-name: none;
+        animation-duration: 1s;
+        animation-timing-function: ease-out;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
     }
+    @keyframes UCommOpen {
+        from{transform: translateX(0px);opacity: 0.1}
+        to{transform:translateX(300px); opacity: 1.0}
+    }
+    /* Moves the InfoCard back to initial position while reducing opacity, fades off to one side of the screen */
+    @keyframes UCommClose {
+
+        from {transform: translateX(300px);opacity: 1.0}
+        to {transform: translateX(0px);opacity: 0.2}
+    }
+    #UComm_submitbutton{
+        background: black;
+        color: white;
+        border: none;
+    }
+    #UCommTitle{
+        text-align: center;
+    }
+    #UCommCreate{
+        position: absolute;
+        bottom: 15%;
+        left: 5%;
+    }
+    #UComm_NameEntryBox{
+        opacity: 1;
+        font-family: arial;
+    }
+
 </style>
 
+
 <!--
-                    ___           ___           ___           ___           ___           ___
-                   /\  \         /\__\         /\  \         /\__\         /\  \         /\  \         _____
-      ___          \:\  \       /:/ _/_       /::\  \       /:/  /        /::\  \       /::\  \       /::\  \
-     /\__\          \:\  \     /:/ /\__\     /:/\:\  \     /:/  /        /:/\:\  \     /:/\:\__\     /:/\:\  \
-    /:/__/      _____\:\  \   /:/ /:/  /    /:/  \:\  \   /:/  /  ___   /:/ /::\  \   /:/ /:/  /    /:/  \:\__\
-   /::\  \     /::::::::\__\ /:/_/:/  /    /:/__/ \:\__\ /:/__/  /\__\ /:/_/:/\:\__\ /:/_/:/__/___ /:/__/ \:|__|
-   \/\:\  \__  \:\~~\~~\/__/ \:\/:/  /     \:\  \ /:/  / \:\  \ /:/  / \:\/:/  \/__/ \:\/:::::/  / \:\  \ /:/  /
-    ~~\:\/\__\  \:\  \        \::/__/       \:\  /:/  /   \:\  /:/  /   \::/__/       \::/~~/~~~~   \:\  /:/  /
-       \::/  /   \:\  \        \:\  \        \:\/:/  /     \:\/:/  /     \:\  \        \:\~~\        \:\/:/  /
-       /:/  /     \:\__\        \:\__\        \::/  /       \::/  /       \:\__\        \:\__\        \::/  /
-       \/__/       \/__/         \/__/         \/__/         \/__/         \/__/         \/__/         \/__/
+
+              ___           ___           ___           ___           ___           ___
+             /\  \         /\__\         /\  \         /\__\         /\  \         /\  \         _____
+___          \:\  \       /:/ _/_       /::\  \       /:/  /        /::\  \       /::\  \       /::\  \
+/\__\          \:\  \     /:/ /\__\     /:/\:\  \     /:/  /        /:/\:\  \     /:/\:\__\     /:/\:\  \
+/:/__/      _____\:\  \   /:/ /:/  /    /:/  \:\  \   /:/  /  ___   /:/ /::\  \   /:/ /:/  /    /:/  \:\__\
+/::\  \     /::::::::\__\ /:/_/:/  /    /:/__/ \:\__\ /:/__/  /\__\ /:/_/:/\:\__\ /:/_/:/__/___ /:/__/ \:|__|
+\/\:\  \__  \:\~~\~~\/__/ \:\/:/  /     \:\  \ /:/  / \:\  \ /:/  / \:\/:/  \/__/ \:\/:::::/  / \:\  \ /:/  /
+~~\:\/\__\  \:\  \        \::/__/       \:\  /:/  /   \:\  /:/  /   \::/__/       \::/~~/~~~~   \:\  /:/  /
+ \::/  /   \:\  \        \:\  \        \:\/:/  /     \:\/:/  /     \:\  \        \:\~~\        \:\/:/  /
+ /:/  /     \:\__\        \:\__\        \::/  /       \::/  /       \:\__\        \:\__\        \::/  /
+ \/__/       \/__/         \/__/         \/__/         \/__/         \/__/         \/__/         \/__/
+
+
 -->
 <div id="InfoCardBox" class="ANIInfoCard" >
     <div id="CountryName"></div>
@@ -369,4 +332,74 @@
 <!-- Move InfoCard Right, ending the animation -->
 <button id="EndButton" class="operateButton" onclick="ANIInfoCardClose()">End</button>
 
+
+
+<style>
+    #CountryName{
+        font-size: x-large;
+        text-align: center;
+        color: #005AA7;
+        font-family: "Agency FB";
+        position: fixed;
+        left: 50px;
+    }
+    #CountryDescription{
+        font-size: medium;
+        text-align: left;
+        font-style: italic;
+        position: fixed;
+        top: 100px;
+    }
+    .operateButton{
+        height: 50px;
+        width: 50px;
+    }
+    #EndButton{
+        position: fixed;
+        bottom: 100px;
+        right: 10px;
+        background-color: blue;
+    }
+    #StartButton{
+        position: fixed;
+        bottom: 50px;
+        right: 10px;
+        background-color: red;}
+
+    #InfoCardBox {
+        position: fixed;
+        z-index: 2;
+        bottom: 200px;
+        right: -200px;
+        width: 200px;
+        height: 500px;
+        border: 5px solid;
+        border-color: #355fce;
+        background-color: white;
+        border-radius: 34px;
+        opacity: 0.1;
+    }
+
+    .ANIInfoCard{
+        animation-name: none;
+        animation-duration: 1s;
+        animation-timing-function: ease-out;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
+    }
+    /* */
+    @keyframes InfoCardOpen {
+        from{transform: translateX(0px);opacity: 0.2}
+        to{transform:translateX(-250px); opacity: 1.0}
+    }
+    /* Moves the InfoCard back to initial position while reducing opacity, fades off to one side of the screen */
+    @keyframes InfoCardClose {
+
+        from {transform: translateX(-250px);opacity: 1.0}
+        to {transform: translateX(0px);opacity: 0.2}
+    }
+
+</style>
+
 </body>
+
