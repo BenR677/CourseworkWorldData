@@ -5,81 +5,99 @@
     <title>Title</title>
 
     <link rel="stylesheet" href="css\InfoCard.css">
-    <link rel="stylesheet" href="css\CommentStyle.css">
+    <link rel="stylesheet" href="css\Comment.css">
     <script>
 
         //Animation Scripts
-        function ANIInfoCardOpen(){
-            document.getElementById('InfoCardBox').style.animationName ='InfoCardOpen';
-        }
-        function ANIInfoCardClose(){
-            document.getElementById('InfoCardBox').style.animationName ='InfoCardClose';
-        }
-        function CommentBoxOpenFunction(){
-            document.getElementById('CommentBox').style.animationName ='CommentBoxOpenAnimation';
-        }
-        function CommentBoxCloseFunction(){
-            document.getElementById('CommentBox').style.animationName ='CommentBoxCloseAnimation';
+        function ANIInfoCardOpen() {
+            document.getElementById('InfoCardBox').style.animationName = 'InfoCardOpen';
         }
 
+        function ANIInfoCardClose() {
+            document.getElementById('InfoCardBox').style.animationName = 'InfoCardClose';
+        }
+
+        function CommentBoxOpenFunction() {
+            document.getElementById('CommentBox').style.animationName = 'CommentBoxOpenAnimation';
+        }
+
+        function CommentBoxCloseFunction() {
+            document.getElementById('CommentBox').style.animationName = 'CommentBoxCloseAnimation';
+        }
+
+/*
+        const NameEnglish = CountryName; //Sends data from search results, to be put into SQL WHERE field
+        const url = "/countryStat/get/";	// Retrieve JSON from server with URL
+
+        fetch(url + NameEnglish, {
+            method: "GET",
+        }).then(response => {
+            return response.json();                 //Return response to JSON
+        }).then(response => {
+            if (response.hasOwnProperty("Error")) { //Checks if response from server has a key "Error"
+                alert(JSON.stringify(response));    // If it does, convert JSON object to string and alert
+            } else {
+                console.log(response);
+                console.log("InfoCardData successfully retrieved");
+
+
+                formatInfoCardStats(response);
+                formatInfoCardMetaData(response);
+                newCommentData(response);
+                getComment(response);
+            }
+        });
+*/
 
         //API Scripts
         function getInfoCardData(CountryName) {
             console.log("Invoked getInfoCardData()");
-
-            const NameEnglish = CountryName; //Sends data from search results, to be put into SQL WHERE field
-            const url = "/countryStat/get/";	// Retrieve JSON from server with URL
-
-            fetch(url + NameEnglish, {
+            var url = "https://restcountries.eu/rest/v2/name/" + CountryName + "?fields=flag;name;latlng;capital;region;subregion;timezones;languages;currencies;demonym;gini;population;area;regionalBlocs;"
+            fetch(url, {
                 method: "GET",
             }).then(response => {
-                return response.json();                 //Return response to JSON
+                return response.json(); //Return response to JSON
             }).then(response => {
                 if (response.hasOwnProperty("Error")) { //Checks if response from server has a key "Error"
-                    alert(JSON.stringify(response));    // If it does, convert JSON object to string and alert
+                    alert(JSON.stringify(response)); // If it does, convert JSON object to string and alert
                 } else {
-                    console.log(response);
-                    console.log("InfoCardData successfully retrieved");
-                    formatInfoCardStats(response);          //This function will create an HTML table of the data
-                    formatInfoCardMetaData(response);
+                    console.log(JSON.stringify(response));
+
+                    //Retrieved JSON (Response) gets sent to all relevant functions that
+                    formatInfoCardStats(response);
                 }
             });
+
         }
 
-        function formatInfoCardStats(StatsData) {
-            formatInfoCardMetaData(StatsData);
-            console.log("Invoked formatInfoCardStats() ");
-            console.log(StatsData);
-            console.log(JSON.stringify(StatsData));
-            console.log("Selected Country ID" + StatsData[0].CountryID);
-            newCommentData(StatsData);
-            getComment(StatsData);
+            function formatInfoCardStats(response) {
+                let countryData = response[0];
+                //Objects which can be handled straight from the array
+                let statArray = ["capital", "subregion", "region", "timezones", "demonym", "gini", "population", "area", "regionalBlocs"];
+                //Name of statistic to be placed in Key
+                let statNameArray = ["Capitol City", "Region", "Continent", "Timezones", "Demonym", "Gini", "Population", "Area", "Regional Blocs"]
+                //Flick through each stat and assign to corresponding table
+                for (let StatIndex = 0; StatIndex < 8; StatIndex++) {
+                    document.getElementById("Key_" + statArray[StatIndex]).innerHTML = statNameArray[StatIndex];
+                    document.getElementById("Stat_" + statArray[StatIndex]).innerHTML = countryData[statArray[StatIndex]];
+                }
+                //Handling Languages and Currencies separately due to list
+                document.getElementById("Stat_languages").innerHTML = countryData.languages[0].name;
+                document.getElementById("Key_languages").innerHTML = "Languages";
 
+                document.getElementById("Stat_currencies").innerHTML = countryData.currencies[0].name;
+                document.getElementById("Key_currencies").innerHTML = "Currencies";
 
-            let keys = Object.keys(StatsData[0]);
-            let values = Object.values(StatsData[0]);
-            console.log(values[0])
-            console.log(keys[0]);
+                //Handling Flag and Name Separately
+                document.getElementById("Stat_flag").src = countryData.flag;
+                document.getElementById("Stat_name").innerHTML = countryData.name;
 
-            //StatIndex is the index of row in the table the Statistic is added too
-            for (let StatIndex = 1; StatIndex<4; StatIndex++){
-                document.getElementById("StatTable"+[StatIndex]).innerHTML =keys[StatIndex];
-                document.getElementById("Value"+[StatIndex]).innerHTML = values[StatIndex];
             }
-
-        }
-        function formatInfoCardMetaData(StatsData) {
-            console.log(StatsData[0].NameEnglish);
-            document.getElementById("CountryName").innerHTML = StatsData[0].NameEnglish;
-            document.getElementById("CountryDescription").innerHTML = StatsData[0].Description;
-        }
-
 
 
     </script>
 </head>
 <body onload="prepareMap()">
-<button onclick="getInfoCardData()">Click me</button>
 
 
 <!--
@@ -94,10 +112,14 @@
                                  88
                                  88
 -->
-<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico"/>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
 
 
 <script type="text/javascript" src="/client/js/countries.js"></script>
@@ -105,15 +127,14 @@
 <script>
 
 
-    function runInfoCard(country){
-        console.log(country);
-        ANIInfoCardClose();
-        let CountryName = country;
-        ANIInfoCardOpen();
-        document.getElementById("newCommentTitle").innerHTML = "Leave a comment on " + CountryName + "!";
-        CommentBoxOpenFunction();
-        getInfoCardData(CountryName);
+    function runInfoCard(CountryName) {
+        console.log(CountryName);
+       // ANIInfoCardOpen();
+        //CommentBoxOpenFunction();
+        //getInfoCardData(CountryName);
+        //runComments(CountryName);
     }
+
 
     function mapclick() {
         console.log("mapclicked")
@@ -126,6 +147,7 @@
         height: 100%;
         margin: 0;
     }
+
     #map {
         position: relative;
         z-index: 0;
@@ -138,7 +160,6 @@
 <div id='map' onclick="mapclick()"></div>
 
 
-
 <!--
  ______   ______   ___ __ __   ___ __ __   ______   ___   __    _________  ______
 /_____/\ /_____/\ /__//_//_/\ /__//_//_/\ /_____/\ /__/\ /__/\ /________/\/_____/\
@@ -148,36 +169,46 @@
    \:\_\ \ \\:\_\ \ \\. \  \  \ \\. \  \  \ \\:\____/\\. \`-\  \ \  \::\ \    /____\:\
     \_____\/ \_____\/ \__\/ \__\/ \__\/ \__\/ \_____\/ \__\/ \__\/   \__\/    \_____\/
 -->
+
 <script>
     "use strict";
+    function runComments(CountryName){
+        //document.getElementById("postedCommentContainer").innerHTML = " ";
+        newCommentData(CountryName);
+        getComment(CountryName);
+    }
 
-    function postComment(){
-        console.log("Invoked PostComment function")
+    function postComment() {
+        //Logging when the post comment function is run
+        console.log("Invoked PostComment() ");
         let url = "/comment/add";
+        //Assigning the const formData to the values of the form
         const formData = new FormData(document.getElementById("newCommentForm"));
-
-        console.log(formData);
+        console.log("TRYING1");
         fetch(url, {
+            //Post method used as this is being written to the database
             method: "POST",
             body: formData,
         }).then(response => {
             return response.json();
         }).then(response => {
-            if (response.hasOwnProperty("Error")){
+            if (response.hasOwnProperty("Error")) {
+                //If error then return JSON to be analysed
                 alert(JSON.stringify(response));
             } else {
+                //Success message
                 console.log("New Comment successfully stored");
             }
         });
     }
 
-    function getComment(StatsData) {
-        let CountryID = StatsData[0].CountryID; //CountryID to be send along with GET request
+    function getComment(CountryName) {
+         //CountryName to be sent along with GET request so can be put into the WHERE field of the SQL
         console.log("Invoked getComment()");
 
         const url = "/comment/get/";	// Retrieve JSON from server with URL
 
-        fetch(url + CountryID, {
+        fetch(url + CountryName, {
             method: "GET",
         }).then(response => {
             return response.json();                 //Return response to JSON
@@ -187,115 +218,141 @@
             } else {
                 console.log(response);
                 console.log("Comments successfully retrieved");
-                formatgetComment(response); //Format the response
+                formatGetComment(response); //Format the response
             }
         });
     }
-    function formatgetComment(CommentsData){
-        document.getElementById("postedCommentContainer").innerHTML = "";
-        let newComment = "";
-        console.log(JSON.stringify(CommentsData));
+    function isEmpty(obj) {
+        return Object.keys(obj).length === 0;
+    }
+
+    function formatGetComment(response) {
+        let CommentsData = response; //Assigning to a more useful variable name
+        let newComment = ""; // Reset newComment in case variable has not been reset
+        //Dynamically generate HTML by flicking through each array in CommentData and taking out the wanted values,
+        // while adding the wanted divs, text etc.
         for (let i = 0, l = CommentsData.length; i < l; i++) {
             let currentComment = CommentsData[i];
-            //let obiwan = obj.Body
-            console.log(currentComment.Body);
+            //+= Will add the new values to the current value of newComment, i.e same as x = x + y
             newComment += "<div class='postedComment'>" +
-                    "<text>" +currentComment.PostDate+ "</text>" + "<br>" +
-                    "<text>" +currentComment.Title+ "</text>" +  "<br>" +
-                    "<text>" +currentComment.Body+ "</text>"+ "<br>" +
-                    "</div>";
+                "<text class = 'postedComment_textDate'>" + "Posted On - " + currentComment.PostDate + "</text>"
+                + "<br>" +
+                    "<text class ='postedComment_textUsername'>" + "From - " + currentComment.Username + "</text>"
+                + "<br>" +
+                "<text class = 'postedComment_textTitle'>" + currentComment.Title + "</text>" +
+                    "<text class = 'postedComment_rating'>" + " Star Rating >" + currentComment.StarRating + "</text>"
+                + "<br>" +
+                "<text class = 'postedComment_textBody'>" + currentComment.Body + "</text>"
+                + "<br>" +
+                "</div>" + "<br>";
 
-            console.log(newComment);
         }
-        document.getElementById("postedCommentContainer").innerHTML += newComment;
-        newComment = "";
+        //Once finished set the inside of the postedCommentContainer div to the newComment HTML
+        document.getElementById("postedCommentContainer").innerHTML = newComment;
     }
 
 
-    function newCommentData(StatsData){
-        //Send CountryID to CountryID form input
-        document.getElementById("newComment_CountryID").value = StatsData[0].CountryID;
+    function newCommentData(CountryName) {
+        document.getElementById("newCommentCountryName").value = CountryName;
+        document.getElementById("newCommentHelpfulness").value = 0;
+        //Create a data object and create a string of different date elements such as day/month/year
         let currentDate = new Date();
         let postDate = currentDate.getDate() + "/"
-            + (currentDate.getMonth()+1)  + "/"
+            + (currentDate.getMonth() + 1) + "/"
             + currentDate.getFullYear() + " @ "
             + currentDate.getHours() + ":"
             + currentDate.getMinutes() + ":"
             + currentDate.getSeconds();
-        document.getElementById("newComment_PostDate").value = postDate
-        console.log(postDate);
+        //Set the date of comment to the new Date string
+        document.getElementById("newCommentPostDate").value = postDate;
 
+        //Debugging each hidden value
+        console.log("CountryName: " + document.getElementById("newCommentCountryName").value);
+        console.log("Helpfulness: " + document.getElementById("newCommentHelpfulness").value);
+        console.log("Post Date: " + document.getElementById("newCommentPostDate").value);
     }
-
 
 
 </script>
 
-
-
 <!-- Comments -->
-<div id = "CommentBox" class = "CommentBoxAnimationController">
+<div id="CommentBox" class="CommentBoxAnimationController">
+
     <!-- Actual Comment form -->
     <div id="newCommentFormContainer">
-        <text id="newCommentTitle"></text>
-    <form id = "newCommentForm">
-        <input type="hidden" name = "newCommentCountryID" id="newComment_CountryID" value ="">
-        <input type = "hidden" name = "newCommentPostDate" id="newComment_PostDate" value ="" >
+        <text id="newCommentFormTitle">Post a Comment!</text>
+        <form id="newCommentForm">
+            <!--Hidden inputs generated by JavaScript -->
+            <!--<input type = "hidden" name ="newCommentUserID" id = "newCommentUserID" value = ""> -->
+            <input type="hidden" name="newCommentCountryName"
+                   id="newCommentCountryName" value="">
 
-        <input  name = "newCommentTitle" id="newCommentForm_Title" type="text" placeholder="Enter Title">
-        <textarea name = "newCommentBody" id="newCommentForm_Body" placeholder="Enter body"></textarea>
-        <fieldset class="rating">
-            <legend>Rating</legend>
 
-            <input id="StarForm1" type="radio" name="StarRating" value="1">
-            <label for="StarForm1">1 star</label>
-            <input id="StarFrom2" type="radio" name="StarRating" value="2">
-            <label for="StarFrom2">2 stars</label>
-            <input id="StarForm3" type="radio" name="StarRating" value="3">
-            <label for="StarForm3">3 stars</label>
-            <input id="StarForm4" type="radio" name="StarRating" value="4">
-            <label for="StarForm4">4 stars</label>
-            <input id="StarForm5" type="radio" name="StarRating" value="5">
-            <label for="StarForm5">5 stars</label>
+            <input type="hidden" name="newCommentPostDate" id="newCommentPostDate" value="">
+            <input type = "hidden" name = "newCommentHelpfulness" id = "newCommentHelpfulness" value = "">
 
-            <div class="stars">
-                <label for="StarForm1" aria-label="1 star" title="1 star"></label>
-                <label for="StarFrom2" aria-label="2 stars" title="2 stars"></label>
-                <label for="StarForm3" aria-label="3 stars" title="3 stars"></label>
-                <label for="StarForm4" aria-label="4 stars" title="4 stars"></label>
-                <label for="StarForm5" aria-label="5 stars" title="5 stars"></label>
-            </div>
+            <!-- Normal Inputs open to the User -->
+            <input name="newCommentName" id = "newCommentName" type = "text" placeholder = "Enter Display Name">
+            <input name="newCommentTitle" id="newCommentTitle" type="text" placeholder="Enter Title">
+            <textarea name="newCommentBody" id="newCommentBody" placeholder="Enter body"></textarea>
 
-        </fieldset>
-        <input type="button" value = "Submit" onclick="postComment()">
-    </form>
+            <!-- Star Rating System -->
+            <fieldset class="rating">
+                <legend>Rating</legend>
+
+                <input id="StarForm1" type="radio" name="StarRating" value="1">
+                <label for="StarForm1">1 star</label>
+                <input id="StarFrom2" type="radio" name="StarRating" value="2">
+                <label for="StarFrom2">2 stars</label>
+                <input id="StarForm3" type="radio" name="StarRating" value="3">
+                <label for="StarForm3">3 stars</label>
+                <input id="StarForm4" type="radio" name="StarRating" value="4">
+                <label for="StarForm4">4 stars</label>
+                <input id="StarForm5" type="radio" name="StarRating" value="5">
+                <label for="StarForm5">5 stars</label>
+
+                <div class="stars">
+                    <label for="StarForm1" aria-label="1 star" title="1 star"></label>
+                    <label for="StarFrom2" aria-label="2 stars" title="2 stars"></label>
+                    <label for="StarForm3" aria-label="3 stars" title="3 stars"></label>
+                    <label for="StarForm4" aria-label="4 stars" title="4 stars"></label>
+                    <label for="StarForm5" aria-label="5 stars" title="5 stars"></label>
+                </div>
+
+            </fieldset>
+            <input type="button" value="Submit" onclick="postComment()">
+        </form>
 
     </div>
+
     <div id="postedCommentContainer">
-        <!-- Demo Container -->
 
     </div>
+
 </div>
-
-
-<style>
+    <style>
     #postedCommentContainer{
-        overflow: auto;
-        border: black;
-        height: 50%;
-        width: 100%;
-        z-index: 11;
-        border: 5px solid;
-        border-color: #fc4a1a;
-
+        border: 5px outset red;
+        background-color: lightblue;
+        text-align: center;
+        z-index: 40;
+        color: black;
+        font-family: Arial;
     }
     .postedComment{
-        font-family: Arial;
-        height: 30%;
-        width: 70%;
-        border: 4px solid;
-        border-color: black;
-        z-index: 10;
+        border: 2px solid black;
+        background-color: aliceblue;
+    }
+    .postedComment_textTitle {
+        font-weight: bold;
+
+    }
+
+    .postedComment_textDate {
+        font-style: italic;
+    }
+
+    .postedComment_textBody {
 
     }
 </style>
@@ -313,60 +370,82 @@
        /:/  /     \:\__\        \:\__\        \::/  /       \::/  /       \:\__\        \:\__\        \::/  /
        \/__/       \/__/         \/__/         \/__/         \/__/         \/__/         \/__/         \/__/
 -->
-<div id="InfoCardBox" class="ANIInfoCard" >
-    <div id="CountryName"></div>
-    <div id="CountryDescription"></div>
+<div id="InfoCardBox" class="ANIInfoCard">
+    <img id = "Stat_flag" src="" alt="CountryFlag">
+    <div id="Stat_name"></div>
+    <br>
     <table class="InfoCardTable">
-        <thead>
-        <tr>
-            <th class="tg-0pky">Statistic</th>
-            <th class="tg-0lax">Value</th>
-        </tr>
-        </thead>
+
         <tbody>
+        <!--General Stats -->
         <tr>
-            <td id="StatTable1"></td>
-            <td id="Value1"></td>
+            <td class = "InfoCardTableHeader">Key</td>
+            <td class = "InfoCardTableHeader">Value</td>
         </tr>
         <tr>
-            <td id= "StatTable2"></td>
-            <td id="Value2"></td>
+            <td id="Key_capital"></td>
+            <td id="Stat_capital"></td>
         </tr>
         <tr>
-            <td id="StatTable3"></td>
-            <td id= "Value3"></td>
+            <td id="Key_region"></td>
+            <td id="Stat_region"></td>
         </tr>
         <tr>
-            <td class="tg-0lax"></td>
-            <td class="tg-0lax"></td>
+            <td id="Key_subregion"></td>
+            <td id="Stat_subregion"></td>
         </tr>
         <tr>
-            <td class="tg-0lax"></td>
-            <td class="tg-0lax"></td>
+            <td id="Key_timezones"></td>
+            <td id="Stat_timezones"></td>
+        </tr>
+        <!--Culture -->
+        <tr>
+            <td id="Key_languages"></td>
+            <td id="Stat_languages"></td>
+        </tr>
+        <tr>
+            <td id="Key_currencies"></td>
+            <td id="Stat_currencies"></td>
+        </tr>
+        <tr>
+            <td id="Key_demonym"></td>
+            <td id="Stat_demonym"></td>
+        </tr>
+        <!-- General Stats -->
+        <tr>
+            <td id="Key_gini"></td>
+            <td id="Stat_gini"></td>
+        </tr>
+        <tr>
+            <td id="Key_population"></td>
+            <td id="Stat_population"></td>
+        </tr>
+        <tr>
+            <td id="Key_area"></td>
+            <td id="Stat_area"></td>
+        </tr>
+        <!-- Alliance -->
+        <tr>
+            <td id="Key_regionalBloc"></td>
+            <td id="Stat_regionalBloc"></td>
         </tr>
         </tbody>
     </table>
 </div>
 
 <style type="text/css">
-    .InfoCardTable  {border-collapse:collapse;border-spacing:2px;position: fixed;left: 10px; top: 30%}
-
-    .InfoCardTable td{border-color:black;border-style:hidden;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-        overflow:hidden;padding:10px 5px;word-break:normal;}
-
-    .InfoCardTable th{border-color:black;border-style:hidden;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-
-    .InfoCardTable .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-
-    .InfoCardTable .tg-0lax{text-align:left;vertical-align:top}
+    .InfoCardTable {
+        border-color: black;
+        font-family: Arial;
+    }
 </style>
 
 
 <!-- Buttons to operate the animations while the client map is still being developed -->
-<!-- Move InfoCard Left, beginning the animation -->
-<button id="StartButton" class="operateButton" onclick="ANIInfoCardOpen()" />Start</button>
-<!-- Move InfoCard Right, ending the animation -->
+<!-- Move CountryStat Left, beginning the animation -->
+<button id="StartButton" class="operateButton" onclick="ANIInfoCardOpen()"/>
+Start</button>
+<!-- Move CountryStat Right, ending the animation -->
 <button id="EndButton" class="operateButton" onclick="ANIInfoCardClose()">End</button>
 
 </body>

@@ -1,10 +1,21 @@
-#CountryName{
+#Stat_name{
     font-size: x-large;
     text-align: center;
     color: #005AA7;
     font-family: "Agency FB";
-    position: fixed;
-    left: 50px;
+}
+#Stat_flag{
+    max-width: 110%;
+    width: 100%;
+    height: 26%;
+    display: block;
+    margin: auto;
+}
+.InfoCardTableHeader{
+    font-weight: bold;
+}
+
+.InfoCardTable{
 }
 #CountryDescription{
     font-size: medium;
@@ -13,6 +24,7 @@
     position: fixed;
     top: 100px;
 }
+
 .operateButton{
     height: 50px;
     width: 50px;
@@ -31,15 +43,13 @@
 
 #InfoCardBox {
     position: fixed;
+    background-color: white;
     z-index: 2;
     bottom: 20%;
-    right: -200px;
-    width: 200px;
-    height: 500px;
-    border: 5px solid;
-    border-color: #355fce;
-    background-color: white;
-    border-radius: 34px;
+    right: -15%;
+    max-width: 15%;
+    height: 60%;
+    border: 5px solid black;
     opacity: 0.1;
 }
 
@@ -52,12 +62,12 @@
 }
 /* */
 @keyframes InfoCardOpen {
-    from{transform: translateX(0px);opacity: 0.2}
-    to{transform:translateX(-250px); opacity: 1.0}
+    from{transform: translateX(0%);opacity: 0.1}
+    to{transform:translateX(-100%); opacity: 1.0}
 }
-/* Moves the InfoCard back to initial position while reducing opacity, fades off to one side of the screen */
+/* Moves the CountryStat back to initial position while reducing opacity, fades off to one side of the screen */
 @keyframes InfoCardClose {
 
-    from {transform: translateX(-250px);opacity: 1.0}
-    to {transform: translateX(0px);opacity: 0.2}
+    from {transform: translateX(-100%);opacity: 1.0}
+    to {transform: translateX(0%);opacity: 0.2}
 }

@@ -9,12 +9,12 @@ import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@Path("countryStats/")
+@Path("countryStat/")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
 @Produces(MediaType.APPLICATION_JSON)
-public class GetStats {
+public class CountryStat {
     @GET
-    @Path("getStats/{NameEnglish}")
+    @Path("get/{NameEnglish}")
     public String countryStatsgetStats(@PathParam("NameEnglish") String NameEnglish) {
         System.out.println("Invoked countryStats.getStats()");
         JSONArray response = new JSONArray();

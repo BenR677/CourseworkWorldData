@@ -1,17 +1,20 @@
 #CommentBox {
     position: fixed;
-    z-index: 2;
+    /*Positions text to the left of the page */
+    z-index: 5;
     bottom: 20%;
+    /*Positions CommentBox outside of page by the same value as its width so its hardly seen */
     left: -25%;
     width: 25%;
     height: 60%;
+    /*Puts a square border with a blue border around the box */
     border: 5px solid;
     border-color: #355fce;
     background-color: white;
-    border-radius: 34px;
     opacity: 0.1;
 }
 .CommentBoxAnimationController {
+    /*Animation name left blank so it can be handled by the Comment Animations Functions */
     animation-name: none;
     animation-duration: 1s;
     animation-timing-function: ease-out;
@@ -19,12 +22,12 @@
     animation-fill-mode: forwards;
 }
 @keyframes CommentBoxOpenAnimation {
+    /*Translate from not visible at all to full visibility and full opacity*/
     from{transform: translateX(0%);opacity: 0.1}
     to{transform:translateX(100%); opacity: 1.0}
 }
-/* Moves the InfoCard back to initial position while reducing opacity, fades off to one side of the screen */
 @keyframes CommentBoxCloseAnimation {
-
+    /*Translate from full opacity and visible to not at all*/
     from {transform: translateX(100%);opacity: 1.0}
     to {transform: translateX(0%);opacity: 0.2}
 }

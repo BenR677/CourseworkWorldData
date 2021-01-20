@@ -3,18 +3,8 @@ function polystyle(feature) {
         //fillColor: 'yellow',
         weight: 2,
         opacity: 1,
-        color: 'red',  //Outline color
+        color: 'lightblue',  //Outline color
         fillOpacity: 0
-    };
-}
-
-function polystyle2(feature) {
-    return {
-        fillColor: 'blue',
-        weight: 20,
-        opacity: 1,
-        color: 'green',  //Outline color
-        fillOpacity: 1
     };
 }
 
@@ -31,7 +21,8 @@ function prepareMap() {
 // Layers in this pane are non-interactive and do not obscure mouse/touch events
     map.getPane('labels').style.pointerEvents = 'none';
 
-    let cartodbAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attribution">CARTO</a>';
+    let cartodbAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy;' +
+        ' <a href="https://carto.com/attribution">CARTO</a>';
 
     let positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png', {
         attribution: cartodbAttribution
